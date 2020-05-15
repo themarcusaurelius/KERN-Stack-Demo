@@ -9,7 +9,7 @@ const isDev = require('electron-is-dev');
 const Menu = electron.Menu
 
 let mainWindow;
-
+ 
 // try {
 //   await electronInstaller.createWindowsInstaller({
 //     appDirectory: '/tmp/build/my-app-64',

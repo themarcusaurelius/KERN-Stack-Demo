@@ -21,7 +21,7 @@ export default function FloatingActionButtons() {
     fetch("/api/data/crime_bulk", {
       method: 'GET',
     })
-  }
+  }  
 
   function stopUpdate() {
     fetch("/api/data/stop", {

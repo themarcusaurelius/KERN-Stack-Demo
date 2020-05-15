@@ -1,28 +1,25 @@
+// Dependencies
 const express = require('express');
 const formData = require('express-form-data');
 const path = require('path');
   
 //Import Routes Here
-const data = require('./routes/api/data')
 const crimeBulk = require('./routes/api/crimeBulk');
-const fireBulk = require('./routes/api/911Bulk');
-const trafficBulk = require('./routes/api/trafficBulk');
+const crimeUpdate = require('./routes/api/crimeUpdate')
+const test = require('./routes/api/test');
    
-//const test = require('./routes/api/crimeBulk');
-
-const app = express();
-
+const app = express(); 
+ 
 // Init Middleware
 app.use(express.json({ extended: false }))
 app.use(express.urlencoded({ extended: true }));
 app.use(formData.parse())
 
-  
+   
 //Define Routes
-app.use('/api/data', data);
 app.use('/api/data', crimeBulk);
-app.use('/api/data', fireBulk);
-app.use('/api/data', trafficBulk);
+app.use('/api/data', crimeUpdate);
+app.use('/api/data', test)
  
 //Serve Static assets in production
 //Configuration for Express to behave correctly in production environment
@@ -37,4 +34,4 @@ if (process.env.NODE_ENV === 'production') {
  
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.group(`Motha Fuckin Serva Started On ${PORT}`));
+app.listen(PORT, () => console.group(`Serva Started On ${PORT}`));

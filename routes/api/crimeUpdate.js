@@ -4,25 +4,18 @@ const axios = require('axios')
 const client = require('../../elasticsearch/connection');
 
 const URL = `https://data.austintexas.gov/resource/fdj4-gpfu.json`;
- 
-// router.get('/stop', () => {
-//     client.cluster.health({},function(err,resp,status) {  
-//         //console.log("-- Client Health --",resp);
-//         console.log("Indexing Stopped")
-//     });
-// }) 
-        
-router.get('/crime_bulk', async () => {
+           
+router.get('/crime_update', function (req,res, next) {
     client.ping({
-        requestTimeout: 30000, 
+        requestTimeout: 30000,
         }, function(error) {
         if (error) {
             console.error('elasticsearch cluster is down!');
         } else {
             console.log('Elasticsearch Ready');
         }
-    });  
-
+    });
+    
     offset = 0;
     value = 500;
     limit = 500;
@@ -34,6 +27,7 @@ router.get('/crime_bulk', async () => {
     
     indexAllDocs = async () => {
         console.log("Getting Data From Host")
+        
         try {
             const APD_POLICE_REPORTS = await axios.get(`${URL}?$limit=${limit}&$offset=${offset}&$order=rep_date_time DESC`,{
                 headers: {
@@ -43,13 +37,15 @@ router.get('/crime_bulk', async () => {
                     ]
                 }
             })
+ 
+            //console.log(`${offset} = ${APD_POLICE_REPORTS.data.length}`)
 
             console.log("Data Recieved!")
 
-            results = APD_POLICE_REPORTS.data
- 
+            //results = APD_POLICE_REPORTS.data
+            
             console.log("Indexing Data ...")
-          
+    
             APD_POLICE_REPORTS.data.map(async report => (
                 reportsObject = {
                     incident_number: report.incident_report_number,
@@ -67,7 +63,6 @@ router.get('/crime_bulk', async () => {
                     sector: report.sector,
                     district: report.district,
                     pra: report.pra,
-                    census_tract: report.census_tract,
                     latitude: report.latitude,
                     longitude: report.longitude,
                     location:
@@ -76,7 +71,9 @@ router.get('/crime_bulk', async () => {
                             lon: report.longitude,
                         }
                 },
-   
+
+                //console.log(await reportsObject)
+
                 await client.index({ 
                     index: 'apd_reports',
                     id: report.incident_report_number,
@@ -85,16 +82,17 @@ router.get('/crime_bulk', async () => {
                 }), (err, resp, status) => {
                     console.log(resp);
                 }
-            ));
-    
-            if (APD_POLICE_REPORTS.data.length > 0) {
+            )); 
+
+            if (offset < 3000) {
                 incrementOffset()
                 indexAllDocs()
             } else {
                 console.log('All Documents Have Been Indexed!')
+                res.send(`${offset} Documents Uploaded`)
             };
         } catch (err) {
-            console.log(err)
+           console.log(err)
         };
     };
     

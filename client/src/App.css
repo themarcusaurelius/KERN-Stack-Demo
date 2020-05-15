@@ -6,4 +6,12 @@
   height: 933px;
 }
 
+.Map {
+  height: 55vh;
+  max-height: 550px;
+  width: 100%;
+  display: block;
+  margin-top: .5%;
+}
+
 
