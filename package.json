@@ -24,7 +24,7 @@
     "express-form-data": "^2.0.10",
     "fetch": "^1.1.0",
     "get-json": "^1.0.1",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.7",
     "nodemon": "^1.19.2"
   },
   "devDependencies": {
